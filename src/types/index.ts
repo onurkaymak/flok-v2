@@ -1,7 +1,7 @@
 export type UserRole = "MANAGER" | "AUTO DETAILER" | "CUSTOMER SERVICE AGENT";
 
 export interface User {
-  name: string;
+  name: string; // We added this later, not exist in Flok-V1.
   userId: string;
   token: string;
   tokenExpTime: string;
