@@ -1,0 +1,46 @@
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+
+import type { User, UserRole } from "../../types";
+
+interface UserState {
+  userId: string | null;
+  token: string | null;
+  tokenExpTime: string | null;
+  isLoggedIn: boolean;
+  userRole: UserRole | null;
+}
+
+const initialState: UserState = {
+  userId: null,
+  token: null,
+  tokenExpTime: null,
+  isLoggedIn: false,
+  userRole: null,
+};
+
+const userSlice = createSlice({
+  name: "user",
+  initialState: initialState,
+  reducers: {
+    login(state, action: PayloadAction<User>) {
+      state.userId = action.payload.userId;
+      state.token = action.payload.token;
+      state.tokenExpTime = action.payload.tokenExpTime;
+      state.userRole = action.payload.userRole;
+    },
+    logout(state) {
+      state.userId = null;
+      state.token = null;
+      state.tokenExpTime = null;
+      state.userRole = null;
+    },
+    setIsLoggedIn(state, action: PayloadAction<boolean>) {
+      state.isLoggedIn = action.payload;
+    },
+  },
+});
+
+export const userActions = userSlice.actions;
+
+export default userSlice.reducer;
