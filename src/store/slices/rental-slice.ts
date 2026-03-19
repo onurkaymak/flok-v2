@@ -1,0 +1,66 @@
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { format } from "date-fns";
+
+import type { RentalService, RentalServiceResponse } from "../../types";
+
+interface RentalState {
+  rentalServices: RentalService[];
+  selectedRentalService: RentalService | null;
+  selectedRentalServiceById: number[] | null;
+}
+
+const initialState: RentalState = {
+  rentalServices: [],
+  selectedRentalService: null,
+  selectedRentalServiceById: null,
+};
+
+const rentalSlice = createSlice({
+  name: "rental",
+  initialState: initialState,
+  reducers: {
+    fetchSelectedRentalService(state, action: PayloadAction<RentalService>) {
+      state.selectedRentalService = { ...action.payload };
+    },
+    fetchRentalServiceList(
+      state,
+      action: PayloadAction<RentalServiceResponse[]>,
+    ) {
+      action.payload.forEach((rentalService) => {
+        state.rentalServices.push({
+          id: rentalService.rentalServiceId,
+          contactName: rentalService.customer.name,
+          contactEmail: rentalService.customer.email,
+          contactNum: rentalService.customer.phoneNum,
+          pickUpTime: format(rentalService.reservationStart, "Pp"),
+          returnTime: format(rentalService.reservationEnd, "Pp"),
+          make: rentalService.vehicle.make,
+          model: rentalService.vehicle.model,
+          vin: rentalService.vehicle.vin,
+          color: rentalService.vehicle.color,
+        });
+      });
+    },
+    add(state, action: PayloadAction<RentalService>) {
+      state.rentalServices.push(action.payload);
+    },
+    delete(state, action: PayloadAction<number>) {
+      const deleteId = action.payload;
+      state.rentalServices = state.rentalServices.filter(
+        (rentalService) => rentalService.id !== deleteId,
+      );
+      state.selectedRentalService = null;
+    },
+    resetRentalServices(state) {
+      state.rentalServices = [];
+    },
+    setSelectedRentalService(state, action: PayloadAction<number[]>) {
+      state.selectedRentalServiceById = action.payload;
+    },
+  },
+});
+
+export const rentalActions = rentalSlice.actions;
+
+export default rentalSlice.reducer;
