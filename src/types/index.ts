@@ -53,3 +53,8 @@ export interface RentalServiceResponse {
     color: string;
   };
 }
+
+export interface UiNotificationResponse {
+  title: string;
+  message: string;
+}
