@@ -36,3 +36,20 @@ export interface RentalService {
   vin: string;
   color: string;
 }
+
+export interface RentalServiceResponse {
+  rentalServiceId: number;
+  reservationStart: string;
+  reservationEnd: string;
+  customer: {
+    name: string;
+    email: string;
+    phoneNum: string;
+  };
+  vehicle: {
+    make: string;
+    model: string;
+    vin: string;
+    color: string;
+  };
+}
