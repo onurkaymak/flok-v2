@@ -3,14 +3,29 @@ import type { AppDispatch } from "../index";
 import { userActions } from "../slices/user-slice";
 import { uiActions } from "../slices/ui-slice";
 
-import type { User } from "../../types";
+import type { User, SignInUserInfo, CreateUserInfo } from "../../types";
 
-interface UserInfo {
-  enteredEmail: string;
-  enteredPassword: string;
-}
+export const createUser = ({ enteredName, enteredEmail, enteredPassword, selectedRole }: CreateUserInfo) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await axios.post("http://localhost:5000/accounts/register", {
+        userName: enteredName,
+        email: enteredEmail,
+        password: enteredPassword,
+        employeeRole: selectedRole,
+      });
+    } catch (err) {
+      dispatch(
+        uiActions.showNotification({
+          title: "Registration Error",
+          message: "Unable to create account. Please try again.",
+        }),
+      );
+    }
+  };
+};
 
-export const SignInUser = ({ enteredEmail, enteredPassword }: UserInfo) => {
+export const SignInUser = ({ enteredEmail, enteredPassword }: SignInUserInfo) => {
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.post("http://localhost:5000/accounts/signIn", {

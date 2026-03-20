@@ -58,3 +58,15 @@ export interface UiNotificationResponse {
   title: string;
   message: string;
 }
+
+export interface SignInUserInfo {
+  enteredEmail: string;
+  enteredPassword: string;
+}
+
+export interface CreateUserInfo {
+  enteredName: string;
+  enteredEmail: string;
+  enteredPassword: string;
+  selectedRole: string;
+}
