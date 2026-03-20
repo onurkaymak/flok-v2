@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from "react-router";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 
+import Splash from "./pages/Splash";
+
 function App() {
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
   const ui = useSelector((state: RootState) => state.ui.notification);
@@ -11,7 +13,7 @@ function App() {
     <>
       {ui && <>Notification</>}
       <Routes>
-        {!isLoggedIn && <Route path="/" element={<>Home</>} />}
+        {!isLoggedIn && <Route path="/" element={<Splash />} />}
         {!isLoggedIn && <Route path="/auth" element={<>Auth</>} />}
         {isLoggedIn && <Route path="/" element={<Navigate to={"/profile"} />} />}
         {isLoggedIn && <Route path="/profile" element={<>Profile</>} />}
