@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 
 import Splash from "./pages/Splash";
+import Auth from "./pages/auth";
 
 function App() {
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
@@ -14,7 +15,7 @@ function App() {
       {ui && <>Notification</>}
       <Routes>
         {!isLoggedIn && <Route path="/" element={<Splash />} />}
-        {!isLoggedIn && <Route path="/auth" element={<>Auth</>} />}
+        {!isLoggedIn && <Route path="/auth" element={<Auth />} />}
         {isLoggedIn && <Route path="/" element={<Navigate to={"/profile"} />} />}
         {isLoggedIn && <Route path="/profile" element={<>Profile</>} />}
         {isLoggedIn && <Route path="/profile/fleet" element={<>Profile</>} />}
