@@ -119,7 +119,7 @@ const Navbar = () => {
                 >
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">Open user menu</span>
-                  <img className="h-8 w-8 rounded-full" src={profileIcon ?? ""} alt="" />
+                  {profileIcon && <img className="h-8 w-8 rounded-full" src={profileIcon} alt="" />}
                 </button>
 
                 {profileDropdownOpen && (

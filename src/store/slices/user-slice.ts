@@ -4,6 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { User, UserRole } from "../../types";
 
 interface UserState {
+  userName: string | null;
   userId: string | null;
   token: string | null;
   tokenExpTime: string | null;
@@ -12,6 +13,7 @@ interface UserState {
 }
 
 const initialState: UserState = {
+  userName: null,
   userId: null,
   token: null,
   tokenExpTime: null,
@@ -24,6 +26,7 @@ const userSlice = createSlice({
   initialState: initialState,
   reducers: {
     login(state, action: PayloadAction<User>) {
+      state.userName = action.payload.name;
       state.userId = action.payload.userId;
       state.token = action.payload.token;
       state.tokenExpTime = action.payload.tokenExpTime;

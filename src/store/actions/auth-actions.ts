@@ -27,7 +27,7 @@ export const createUser = ({ enteredName, enteredEmail, enteredPassword, selecte
   };
 };
 
-export const SignInUser = ({ enteredEmail, enteredPassword }: SignInUserInfo) => {
+export const signInUser = ({ enteredEmail, enteredPassword }: SignInUserInfo) => {
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.post("http://localhost:5000/accounts/signIn", {

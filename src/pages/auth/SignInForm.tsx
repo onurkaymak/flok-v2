@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { SignInUser } from "../../store/actions/auth-actions";
+import { signInUser } from "../../store/actions/auth-actions";
 import { useNavigate } from "react-router";
 
 interface Props {
@@ -24,7 +24,7 @@ const SignInForm = ({ onCreateAccountButton }: Props) => {
       enteredEmail,
       enteredPassword,
     };
-    await dispatch(SignInUser(userInfo));
+    await dispatch(signInUser(userInfo));
     navigate("/profile", { replace: true });
   };
 
