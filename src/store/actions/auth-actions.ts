@@ -3,6 +3,8 @@ import type { AppDispatch } from "../index";
 import { userActions } from "../slices/user-slice";
 import { uiActions } from "../slices/ui-slice";
 
+import { logoutTimer } from "../../App";
+
 import type { User, SignInUserInfo, CreateUserInfo } from "../../types";
 
 export const createUser = ({ enteredName, enteredEmail, enteredPassword, selectedRole }: CreateUserInfo) => {
@@ -53,6 +55,18 @@ export const SignInUser = ({ enteredEmail, enteredPassword }: SignInUserInfo) =>
           message: "Invalid email or password. Please try again.",
         }),
       );
+    }
+  };
+};
+
+export const logOutUser = () => {
+  return async (dispatch: AppDispatch) => {
+    dispatch(userActions.logout());
+    dispatch(userActions.setIsLoggedIn(false));
+    localStorage.removeItem("userData");
+
+    if (logoutTimer) {
+      clearTimeout(logoutTimer);
     }
   };
 };

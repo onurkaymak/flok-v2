@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { RootState } from "../store";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { logOutUser } from "../store/actions/auth-actions";
 
 const Navbar = () => {
   const [profileIcon, setProfileIcon] = useState<string | null>(null);
@@ -10,6 +12,8 @@ const Navbar = () => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const userRole = useSelector((state: RootState) => state.user.userRole);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     switch (userRole) {
@@ -29,7 +33,7 @@ const Navbar = () => {
 
   const signOutButtonHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-    // dispatch(logOutUser());
+    dispatch(logOutUser());
   };
 
   return (
