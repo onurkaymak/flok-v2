@@ -45,7 +45,6 @@ function App() {
         isLoggedIn: true,
       };
       dispatch(userActions.login(info));
-      dispatch(userActions.setIsLoggedIn(true));
 
       const remainingTime = calculateRemainingTime(storedData.tokenExpTime);
       logoutTimer = setTimeout(() => logOutHandler(), remainingTime);

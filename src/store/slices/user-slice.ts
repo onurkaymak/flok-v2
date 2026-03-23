@@ -27,16 +27,15 @@ const userSlice = createSlice({
       state.userId = action.payload.userId;
       state.token = action.payload.token;
       state.tokenExpTime = action.payload.tokenExpTime;
+      state.isLoggedIn = true;
       state.userRole = action.payload.userRole;
     },
     logout(state) {
       state.userId = null;
       state.token = null;
       state.tokenExpTime = null;
+      state.isLoggedIn = false;
       state.userRole = null;
-    },
-    setIsLoggedIn(state, action: PayloadAction<boolean>) {
-      state.isLoggedIn = action.payload;
     },
   },
 });

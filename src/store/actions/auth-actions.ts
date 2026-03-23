@@ -47,7 +47,6 @@ export const SignInUser = ({ enteredEmail, enteredPassword }: SignInUserInfo) =>
       localStorage.setItem("userData", JSON.stringify(userInfo));
 
       dispatch(userActions.login(userInfo));
-      dispatch(userActions.setIsLoggedIn(true));
     } catch (error) {
       dispatch(
         uiActions.showNotification({
@@ -62,7 +61,6 @@ export const SignInUser = ({ enteredEmail, enteredPassword }: SignInUserInfo) =>
 export const logOutUser = () => {
   return async (dispatch: AppDispatch) => {
     dispatch(userActions.logout());
-    dispatch(userActions.setIsLoggedIn(false));
     localStorage.removeItem("userData");
 
     if (logoutTimer) {
