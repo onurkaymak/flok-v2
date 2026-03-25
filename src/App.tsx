@@ -12,6 +12,7 @@ import Auth from "./pages/auth";
 import Profile from "./pages/profile";
 import type { User } from "./types";
 import { userActions } from "./store/slices/user-slice";
+import Fleet from "./pages/fleet";
 
 export let logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -62,7 +63,7 @@ function App() {
         {isLoggedIn && <Route path="/" element={<Navigate to={"/profile"} />} />}
         {isLoggedIn && (
           <Route path="/profile" element={<Profile />}>
-            <Route path="fleet" element={<>Profile</>} />
+            <Route path="fleet" element={<Fleet />} />
             <Route path="fleet/add" element={<>Profile</>} />
             <Route path="fleet/update" element={<>Profile</>} />
             <Route path="production" element={<>Profile</>} />
