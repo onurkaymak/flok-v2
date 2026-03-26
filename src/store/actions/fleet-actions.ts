@@ -118,3 +118,27 @@ export const updateVehicle = (vehicleInfo: Vehicle, token: string) => {
     }
   };
 };
+
+export const deleteVehicle = (vehicleId: number, token: string) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/fleet/${vehicleId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(fleetActions.deleteVehicle(vehicleId));
+      dispatch(
+        uiActions.showNotification({
+          title: "Success",
+          message: "Vehicle has been deleted from the inventory.",
+        }),
+      );
+    } catch (err) {
+      dispatch(
+        uiActions.showNotification({
+          title: "Delete Vehicle Error",
+          message: "Something went wrong. Please try again.",
+        }),
+      );
+    }
+  };
+};
