@@ -69,3 +69,52 @@ export const addVehicle = (vehicleInfo: Vehicle, token: string) => {
     }
   };
 };
+
+export const updateVehicle = (vehicleInfo: Vehicle, token: string) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/fleet/${vehicleInfo.id}`,
+        {
+          vehicleId: vehicleInfo.id,
+          vin: vehicleInfo.vin,
+          make: vehicleInfo.make,
+          model: vehicleInfo.model,
+          color: vehicleInfo.color,
+          mileage: vehicleInfo.mileage,
+          class: vehicleInfo.class,
+          classCode: vehicleInfo.classCode,
+          state: vehicleInfo.state,
+          licensePlate: vehicleInfo.licensePlate,
+          isRented: vehicleInfo.isRented,
+          inProduction: vehicleInfo.inProduction,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      const updatedVehicle: Vehicle = {
+        id: response.data.vehicle.vehicleId,
+        vin: response.data.vehicle.vin,
+        make: response.data.vehicle.make,
+        model: response.data.vehicle.model,
+        color: response.data.vehicle.color,
+        mileage: response.data.vehicle.mileage,
+        class: response.data.vehicle.class,
+        classCode: response.data.vehicle.classCode,
+        state: response.data.vehicle.state,
+        licensePlate: response.data.vehicle.licensePlate,
+        isRented: response.data.vehicle.isRented,
+        inProduction: response.data.vehicle.inProduction,
+      };
+      dispatch(fleetActions.updateVehicle(updatedVehicle));
+    } catch (err) {
+      dispatch(
+        uiActions.showNotification({
+          title: "Update Vehicle Error",
+          message: "Something went wrong. Please try again.",
+        }),
+      );
+    }
+  };
+};
