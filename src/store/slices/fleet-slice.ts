@@ -30,13 +30,11 @@ const fleetSlice = createSlice({
       state.selectedVehicles = [...action.payload];
     },
     updateVehicle(state, action: PayloadAction<Vehicle>) {
-      const vehicleId = action.payload.id;
+      const vehicleId = action.payload.vehicleId;
       const updatedVehicle = action.payload;
-      const foundedVehicle = state.vehicles.find(
-        (vehicle) => vehicle.id === vehicleId,
-      );
+      const foundedVehicle = state.vehicles.find((vehicle) => vehicle.vehicleId === vehicleId);
       if (foundedVehicle) {
-        foundedVehicle.id = updatedVehicle.id;
+        foundedVehicle.vehicleId = updatedVehicle.vehicleId;
         foundedVehicle.vin = updatedVehicle.vin;
         foundedVehicle.make = updatedVehicle.make;
         foundedVehicle.model = updatedVehicle.model;
@@ -52,9 +50,7 @@ const fleetSlice = createSlice({
     },
     deleteVehicle(state, action: PayloadAction<number>) {
       const selectedVehicleId = action.payload;
-      state.vehicles = state.vehicles.filter(
-        (vehicle) => vehicle.id !== selectedVehicleId,
-      );
+      state.vehicles = state.vehicles.filter((vehicle) => vehicle.vehicleId !== selectedVehicleId);
     },
   },
 });

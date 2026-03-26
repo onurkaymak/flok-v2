@@ -45,7 +45,7 @@ export const addVehicle = (vehicleInfo: Vehicle, token: string) => {
         },
       );
       const newVehicle: Vehicle = {
-        id: response.data.vehicle.vehicleId,
+        vehicleId: response.data.vehicle.vehicleId,
         vin: response.data.vehicle.vin,
         make: response.data.vehicle.make,
         model: response.data.vehicle.model,
@@ -74,9 +74,9 @@ export const updateVehicle = (vehicleInfo: Vehicle, token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/fleet/${vehicleInfo.id}`,
+        `http://localhost:5000/api/fleet/${vehicleInfo.vehicleId}`,
         {
-          vehicleId: vehicleInfo.id,
+          vehicleId: vehicleInfo.vehicleId,
           vin: vehicleInfo.vin,
           make: vehicleInfo.make,
           model: vehicleInfo.model,
@@ -94,7 +94,7 @@ export const updateVehicle = (vehicleInfo: Vehicle, token: string) => {
         },
       );
       const updatedVehicle: Vehicle = {
-        id: response.data.vehicle.vehicleId,
+        vehicleId: response.data.vehicle.vehicleId,
         vin: response.data.vehicle.vin,
         make: response.data.vehicle.make,
         model: response.data.vehicle.model,
