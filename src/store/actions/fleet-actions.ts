@@ -142,3 +142,15 @@ export const deleteVehicle = (vehicleId: number, token: string) => {
     }
   };
 };
+
+export const resetVehiclesList = () => {
+  return (dispatch: AppDispatch) => {
+    dispatch(fleetActions.resetVehicles());
+  };
+};
+
+export const setSelectedVehicles = (selectedVehiclesId: number[]) => {
+  return (dispatch: AppDispatch) => {
+    dispatch(fleetActions.setSelectedVehicleById(selectedVehiclesId));
+  };
+};
