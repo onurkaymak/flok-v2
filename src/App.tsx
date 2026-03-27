@@ -15,6 +15,7 @@ import { userActions } from "./store/slices/user-slice";
 import Fleet from "./pages/fleet";
 import Notification from "./layout/Notification";
 import AddVehicle from "./pages/fleet/AddVehicle";
+import UpdateVehicle from "./pages/fleet/UpdateVehicle";
 
 export let logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -67,7 +68,7 @@ function App() {
           <Route path="/profile" element={<Profile />}>
             <Route path="fleet" element={<Fleet />} />
             <Route path="fleet/add" element={<AddVehicle />} />
-            <Route path="fleet/update" element={<>Profile</>} />
+            <Route path="fleet/update" element={<UpdateVehicle />} />
             <Route path="production" element={<>Profile</>} />
             <Route path="production/add" element={<>Profile</>} />
             <Route path="rental" element={<>Profile</>} />

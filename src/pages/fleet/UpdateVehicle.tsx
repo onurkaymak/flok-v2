@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { addVehicle } from "../../store/actions/fleet-actions";
+import { updateVehicle } from "../../store/actions/fleet-actions";
 import type { RootState } from "../../store";
 import type { Vehicle } from "../../types";
+import { uiActions } from "../../store/slices/ui-slice";
 import { fleetActions } from "../../store/slices/fleet-slice";
 
 const US_STATES = [
@@ -66,10 +67,12 @@ const US_STATES = [
   "WY",
 ];
 
-const AddVehicle = () => {
+const UpdateVehicle = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const token = useSelector((state: RootState) => state.user.token);
+  const selectedVehicles = useSelector((state: RootState) => state.fleet.selectedVehicles);
+  const vehiclesList = useSelector((state: RootState) => state.fleet.vehicles);
 
   const [vin, setVin] = useState("");
   const [make, setMake] = useState("");
@@ -84,11 +87,44 @@ const AddVehicle = () => {
   const [inProduction, setInProduction] = useState(false);
 
   useEffect(() => {
-    dispatch(fleetActions.setSelectedVehicleById([]));
+    if (selectedVehicles.length === 0) {
+      dispatch(
+        uiActions.showNotification({
+          title: "No Vehicle Selected",
+          message: "Please select a vehicle from the list before updating.",
+        }),
+      );
+      navigate("/profile/fleet");
+      return;
+    }
+
+    const found = vehiclesList.find((vehicle: any) => vehicle.vehicleId === selectedVehicles[0]);
+    if (found) {
+      setVin(found.vin);
+      setMake(found.make);
+      setModel(found.model);
+      setColor(found.color);
+      setMileage(String(found.mileage));
+      setVehicleClass(found.class);
+      setClassCode(found.classCode);
+      setState(found.state);
+      setLicensePlate(found.licensePlate);
+      setIsRented(found.isRented);
+      setInProduction(found.inProduction);
+    }
+
+    return () => {
+      dispatch(fleetActions.setSelectedVehicleById([]));
+    };
   }, []);
 
+  if (selectedVehicles.length === 0) {
+    return null;
+  }
+
   const submitHandler = () => {
-    const vehicleInfo: Omit<Vehicle, "vehicleId"> = {
+    const vehicleInfo: Vehicle = {
+      vehicleId: selectedVehicles[0],
       vin,
       make,
       model,
@@ -101,8 +137,7 @@ const AddVehicle = () => {
       isRented,
       inProduction,
     };
-
-    dispatch(addVehicle(vehicleInfo as Vehicle, token!));
+    dispatch(updateVehicle(vehicleInfo, token!));
     navigate("/profile/fleet");
   };
 
@@ -118,7 +153,7 @@ const AddVehicle = () => {
 
   return (
     <div className="flex flex-col gap-4 w-full xl:max-w-screen-xl mx-auto">
-      <h1 className="text-5xl font-semibold text-center text-gray-900">Add Vehicle</h1>
+      <h1 className="text-5xl font-semibold text-center text-gray-900">Update Vehicle</h1>
 
       <div className="space-y-12 max-w-3xl mx-auto w-full">
         {/* Section 1 */}
@@ -355,11 +390,11 @@ const AddVehicle = () => {
           onClick={submitHandler}
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Add Vehicle
+          Update Vehicle
         </button>
       </div>
     </div>
   );
 };
 
-export default AddVehicle;
+export default UpdateVehicle;

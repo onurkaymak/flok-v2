@@ -11,7 +11,7 @@ import { uiActions } from "../../store/slices/ui-slice";
 import type { Vehicle } from "../../types";
 
 const columns: GridColDef<Vehicle>[] = [
-  { field: "id", headerName: "ID", width: 70 },
+  { field: "vehicleId", headerName: "ID", width: 70 },
   { field: "vin", headerName: "VIN", width: 160 },
   { field: "make", headerName: "Make", width: 120 },
   { field: "model", headerName: "Model", width: 120 },
@@ -50,6 +50,7 @@ const Fleet = () => {
   }, [dispatch, token]);
 
   useEffect(() => {
+    dispatch(fleetActions.setSelectedVehicleById([]));
     fetcher();
   }, []);
 
