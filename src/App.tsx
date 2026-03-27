@@ -13,6 +13,7 @@ import Profile from "./pages/profile";
 import type { User } from "./types";
 import { userActions } from "./store/slices/user-slice";
 import Fleet from "./pages/fleet";
+import Notification from "./layout/Notification";
 
 export let logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -56,7 +57,7 @@ function App() {
 
   return (
     <>
-      {ui && <>Notification</>}
+      {ui && <Notification title={ui.title} message={ui.message} />}
       <Routes>
         {!isLoggedIn && <Route path="/" element={<Splash />} />}
         {!isLoggedIn && <Route path="/auth" element={<Auth />} />}

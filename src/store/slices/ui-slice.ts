@@ -1,10 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-
 import type { UiNotificationResponse } from "../../types";
 
 interface UiState {
-  notification: null | UiNotificationResponse;
+  notification: UiNotificationResponse | null;
 }
 
 const initialState: UiState = {
@@ -13,12 +12,15 @@ const initialState: UiState = {
 
 const uiSlice = createSlice({
   name: "ui",
-  initialState: initialState,
+  initialState,
   reducers: {
     showNotification(state, action: PayloadAction<UiNotificationResponse>) {
-      state.notification = action.payload;
+      state.notification = {
+        title: action.payload.title,
+        message: action.payload.message,
+      };
     },
-    resetNotification(state) {
+    clearNotification(state) {
       state.notification = null;
     },
   },
