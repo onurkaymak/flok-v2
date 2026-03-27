@@ -92,7 +92,7 @@ const Fleet = () => {
   return (
     <div className="flex flex-col h-full gap-4 w-full xl:max-w-screen-xl mx-auto">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Vehicle List</h1>
+        <h1 className="text-5xl font-semibold text-center text-gray-900">Vehicle List</h1>
       </div>
 
       <div className="flex-1 h-full">
