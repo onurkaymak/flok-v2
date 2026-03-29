@@ -16,6 +16,7 @@ import Fleet from "./pages/fleet";
 import Notification from "./layout/Notification";
 import AddVehicle from "./pages/fleet/AddVehicle";
 import UpdateVehicle from "./pages/fleet/UpdateVehicle";
+import ProtectedRoute from "./layout/ProtectedRoute";
 
 export let logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -67,12 +68,54 @@ function App() {
         {isLoggedIn && (
           <Route path="/profile" element={<Profile />}>
             <Route path="fleet" element={<Fleet />} />
-            <Route path="fleet/add" element={<AddVehicle />} />
-            <Route path="fleet/update" element={<UpdateVehicle />} />
-            <Route path="production" element={<>Profile</>} />
-            <Route path="production/add" element={<>Profile</>} />
-            <Route path="rental" element={<>Profile</>} />
-            <Route path="rental/add" element={<>Profile</>} />
+            <Route
+              path="fleet/add"
+              element={
+                <ProtectedRoute allowedRoles={["MANAGER"]}>
+                  <AddVehicle />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="fleet/update"
+              element={
+                <ProtectedRoute allowedRoles={["MANAGER"]}>
+                  <UpdateVehicle />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="production"
+              element={
+                <ProtectedRoute allowedRoles={["MANAGER", "AUTO DETAILER"]}>
+                  <>Production</>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="production/add"
+              element={
+                <ProtectedRoute allowedRoles={["MANAGER", "AUTO DETAILER"]}>
+                  <>Production Add</>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="rental"
+              element={
+                <ProtectedRoute allowedRoles={["MANAGER", "CUSTOMER SERVICE AGENT"]}>
+                  <>Rental</>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="rental/add"
+              element={
+                <ProtectedRoute allowedRoles={["MANAGER", "CUSTOMER SERVICE AGENT"]}>
+                  <>Rental Add</>
+                </ProtectedRoute>
+              }
+            />
           </Route>
         )}
         {!isLoggedIn && <Route path="/profile" element={<Navigate to="/" />} />}
