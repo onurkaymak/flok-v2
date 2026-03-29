@@ -12,8 +12,14 @@ const Navbar = () => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const userRole = useSelector((state: RootState) => state.user.userRole);
-
   const dispatch = useAppDispatch();
+
+  const isManager = userRole === "MANAGER";
+  const isAutoDetailer = userRole === "AUTO DETAILER";
+  const isCustomerServiceAgent = userRole === "CUSTOMER SERVICE AGENT";
+
+  const canAccessProduction = isManager || isAutoDetailer;
+  const canAccessRental = isManager || isCustomerServiceAgent;
 
   useEffect(() => {
     switch (userRole) {
@@ -35,6 +41,16 @@ const Navbar = () => {
     event.preventDefault();
     dispatch(logOutUser());
   };
+
+  const activeClass = "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium";
+  const enabledClass = "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium";
+  const disabledClass = "text-gray-500 rounded-md px-3 py-2 text-sm font-medium cursor-not-allowed opacity-50";
+
+  const activeMobileClass = "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium";
+  const enabledMobileClass =
+    "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium";
+  const disabledMobileClass =
+    "text-gray-500 block rounded-md px-3 py-2 text-base font-medium cursor-not-allowed opacity-50";
 
   return (
     <div className="col-start-1 col-end-4 row-start-1">
@@ -65,36 +81,31 @@ const Navbar = () => {
               </div>
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
-                  <NavLink
-                    to="/profile/fleet"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                    }
-                  >
+                  {/* Fleet - accessible to all */}
+                  <NavLink to="/profile/fleet" className={({ isActive }) => (isActive ? activeClass : enabledClass)}>
                     Fleet
                   </NavLink>
-                  <NavLink
-                    to="/profile/production"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                    }
-                  >
-                    Production
-                  </NavLink>
-                  <NavLink
-                    to="/profile/rental"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                    }
-                  >
-                    Rental
-                  </NavLink>
+
+                  {/* Production - Manager and Auto Detailer only */}
+                  {canAccessProduction ? (
+                    <NavLink
+                      to="/profile/production"
+                      className={({ isActive }) => (isActive ? activeClass : enabledClass)}
+                    >
+                      Production
+                    </NavLink>
+                  ) : (
+                    <span className={disabledClass}>Production</span>
+                  )}
+
+                  {/* Rental - Manager and Customer Service Agent only */}
+                  {canAccessRental ? (
+                    <NavLink to="/profile/rental" className={({ isActive }) => (isActive ? activeClass : enabledClass)}>
+                      Rental
+                    </NavLink>
+                  ) : (
+                    <span className={disabledClass}>Rental</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -150,34 +161,32 @@ const Navbar = () => {
             <div className="space-y-1 px-2 pb-3 pt-2">
               <NavLink
                 to="/profile/fleet"
-                className={({ isActive }) =>
-                  isActive
-                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-                }
+                className={({ isActive }) => (isActive ? activeMobileClass : enabledMobileClass)}
               >
                 Fleet
               </NavLink>
-              <NavLink
-                to="/profile/production"
-                className={({ isActive }) =>
-                  isActive
-                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-                }
-              >
-                Production
-              </NavLink>
-              <NavLink
-                to="/profile/rental"
-                className={({ isActive }) =>
-                  isActive
-                    ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-                }
-              >
-                Rental
-              </NavLink>
+
+              {canAccessProduction ? (
+                <NavLink
+                  to="/profile/production"
+                  className={({ isActive }) => (isActive ? activeMobileClass : enabledMobileClass)}
+                >
+                  Production
+                </NavLink>
+              ) : (
+                <span className={disabledMobileClass}>Production</span>
+              )}
+
+              {canAccessRental ? (
+                <NavLink
+                  to="/profile/rental"
+                  className={({ isActive }) => (isActive ? activeMobileClass : enabledMobileClass)}
+                >
+                  Rental
+                </NavLink>
+              ) : (
+                <span className={disabledMobileClass}>Rental</span>
+              )}
             </div>
           </div>
         )}

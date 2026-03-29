@@ -41,8 +41,11 @@ const Fleet = () => {
   const token = useSelector((state: RootState) => state.user.token);
   const vehicles = useSelector((state: RootState) => state.fleet.vehicles);
   const selectedVehicles = useSelector((state: RootState) => state.fleet.selectedVehicles);
+  const userRole = useSelector((state: RootState) => state.user.userRole);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const isManager = userRole === "MANAGER";
 
   const fetcher = useCallback(async () => {
     dispatch(fleetActions.resetVehicles());
@@ -131,7 +134,12 @@ const Fleet = () => {
           <Button onClick={() => setDeleteModalOpen(false)} variant="contained" color="success">
             Cancel
           </Button>
-          <Button onClick={deleteVehicleHandler} variant="contained" color="error">
+          <Button
+            onClick={deleteVehicleHandler}
+            variant="contained"
+            color="error"
+            disabled={selectedVehicles.length === 0 || !isManager}
+          >
             Delete
           </Button>
         </DialogActions>
