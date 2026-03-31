@@ -19,6 +19,7 @@ import UpdateVehicle from "./pages/fleet/UpdateVehicle";
 import Rental from "./pages/rental";
 
 import ProtectedRoute from "./layout/ProtectedRoute";
+import AddRental from "./pages/profile/AddRental";
 
 export let logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -114,7 +115,7 @@ function App() {
               path="rental/add"
               element={
                 <ProtectedRoute allowedRoles={["MANAGER", "CUSTOMER SERVICE AGENT"]}>
-                  <>Rental Add</>
+                  <AddRental />
                 </ProtectedRoute>
               }
             />
