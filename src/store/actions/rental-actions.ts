@@ -26,8 +26,23 @@ export const fetchRentalService = (
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const fetchedRentalService = response.data[0];
-      dispatch(rentalActions.fetchSelectedRentalService(fetchedRentalService));
+
+      const raw: RentalServiceResponse = response.data[0];
+
+      const rentalService = {
+        id: raw.rentalServiceId,
+        contactName: raw.customer.name,
+        contactEmail: raw.customer.email,
+        contactNum: raw.customer.phoneNum,
+        pickUpTime: format(raw.reservationStart, "Pp"),
+        returnTime: format(raw.reservationEnd, "Pp"),
+        make: raw.vehicle.make,
+        model: raw.vehicle.model,
+        vin: raw.vehicle.vin,
+        color: raw.vehicle.color,
+      };
+
+      dispatch(rentalActions.fetchSelectedRentalService(rentalService));
     } catch (err) {
       dispatch(
         uiActions.showNotification({
