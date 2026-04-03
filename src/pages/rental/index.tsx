@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState, useRef } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchRentalService, fetchRentalServiceList, deleteRentalService } from "../../store/actions/rental-actions";
 import type { RootState } from "../../store";
@@ -37,6 +37,7 @@ const Rental = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const [deleteFromInfoModal, setDeleteFromInfoModal] = useState(false);
+  const searchPendingRef = useRef(false);
 
   // Search form state
   const [rentalServiceId, setRentalServiceId] = useState("");
@@ -54,6 +55,14 @@ const Rental = () => {
     dispatch(rentalActions.setSelectedRentalService([]));
     fetcher();
   }, []);
+
+  // Open modal only when fetch successfully updates selectedRentalService
+  useEffect(() => {
+    if (searchPendingRef.current && selectedRentalService !== null) {
+      searchPendingRef.current = false;
+      setInfoModalOpen(true);
+    }
+  }, [selectedRentalService]);
 
   // --- DataGrid selection ---
   const rowSelectionHandler = (selectionModel: GridRowSelectionModel) => {
@@ -87,13 +96,14 @@ const Rental = () => {
     else if (customerEmail) reservationInfo.customerEmail = customerEmail;
     else if (customerPhoneNum) reservationInfo.customerPhoneNum = customerPhoneNum;
 
+    dispatch(rentalActions.clearSelectedRentalService());
+    searchPendingRef.current = true;
     dispatch(fetchRentalService(reservationInfo, token!));
 
     setRentalServiceId("");
     setCustomerEmail("");
     setCustomerPhoneNum("");
     setDeleteFromInfoModal(false);
-    setInfoModalOpen(true);
   };
 
   const infoModalCloseHandler = () => {
@@ -137,7 +147,7 @@ const Rental = () => {
   const selectedCount = selectedRentalServiceById?.length ?? 0;
 
   return (
-    <div className="flex flex-col h-full gap-8 xl:max-w-screen-xl mx-auto">
+    <div className="flex flex-col h-full gap-8 w-full mx-auto">
       {/* Search Form */}
       <div className="border-b border-gray-200 pb-8 xl:max-w-screen-xl mx-auto w-full">
         <h1 className="text-5xl font-semibold text-center text-gray-900 mb-6 w-full">Reservation Check</h1>
@@ -201,7 +211,7 @@ const Rental = () => {
       <h1 className="text-5xl font-semibold text-center text-gray-900 w-full">Reservations</h1>
 
       {/* DataGrid */}
-      <div style={{ height: 780 }}>
+      <div style={{ height: 480 }}>
         <DataGrid
           style={{ height: "100%" }}
           rows={rentalServices}
