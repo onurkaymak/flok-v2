@@ -278,6 +278,18 @@ const Rental = () => {
               {deleteFromInfoModal ? "Confirm Delete" : "Delete"}
             </Button>
           )}
+          {!deleteFromInfoModal && (
+            <Button
+              onClick={() => {
+                setInfoModalOpen(false);
+                navigate("/profile/rental/update");
+              }}
+              variant="contained"
+              color="primary"
+            >
+              Edit
+            </Button>
+          )}
           <Button onClick={infoModalCloseHandler} variant="contained" color="success">
             {deleteFromInfoModal ? "Cancel" : "Close"}
           </Button>
