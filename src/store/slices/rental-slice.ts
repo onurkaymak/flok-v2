@@ -49,6 +49,22 @@ const rentalSlice = createSlice({
       state.rentalServices = state.rentalServices.filter((rentalService) => rentalService.id !== deleteId);
       state.selectedRentalService = null;
     },
+    update(state, action: PayloadAction<{ id: number; reservationStart: string; reservationEnd: string }>) {
+      const { id, reservationStart, reservationEnd } = action.payload;
+      const existing = state.rentalServices.find((r) => r.id === id);
+      if (existing) {
+        existing.reservationStart = reservationStart;
+        existing.reservationEnd = reservationEnd;
+        existing.pickUpTime = format(reservationStart, "Pp");
+        existing.returnTime = format(reservationEnd, "Pp");
+      }
+      if (state.selectedRentalService?.id === id) {
+        state.selectedRentalService.reservationStart = reservationStart;
+        state.selectedRentalService.reservationEnd = reservationEnd;
+        state.selectedRentalService.pickUpTime = format(reservationStart, "Pp");
+        state.selectedRentalService.returnTime = format(reservationEnd, "Pp");
+      }
+    },
     resetRentalServices(state) {
       state.rentalServices = [];
     },
