@@ -36,6 +36,8 @@ export const fetchRentalService = (
         contactNum: raw.customer.phoneNum,
         pickUpTime: format(raw.reservationStart, "Pp"),
         returnTime: format(raw.reservationEnd, "Pp"),
+        reservationStart: raw.reservationStart,
+        reservationEnd: raw.reservationEnd,
         make: raw.vehicle.make,
         model: raw.vehicle.model,
         vin: raw.vehicle.vin,
@@ -98,13 +100,17 @@ export const addRentalService = (
         },
       );
 
+      const raw = response.data.customer.rentalJoinEntities[0];
+
       const createdReservation = {
-        id: response.data.customer.rentalJoinEntities[0].rentalServiceId,
+        id: raw.rentalServiceId,
         contactName: response.data.customer.name,
         contactEmail: response.data.customer.email,
         contactNum: response.data.customer.phoneNum,
-        pickUpTime: format(response.data.customer.rentalJoinEntities[0].reservationStart, "Pp"),
-        returnTime: format(response.data.customer.rentalJoinEntities[0].reservationEnd, "Pp"),
+        pickUpTime: format(raw.reservationStart, "Pp"),
+        returnTime: format(raw.reservationEnd, "Pp"),
+        reservationStart: raw.reservationStart,
+        reservationEnd: raw.reservationEnd,
         make: response.data.vehicle.make,
         model: response.data.vehicle.model,
         vin: response.data.vehicle.vin,

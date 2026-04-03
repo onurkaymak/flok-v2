@@ -23,10 +23,7 @@ const rentalSlice = createSlice({
     fetchSelectedRentalService(state, action: PayloadAction<RentalService>) {
       state.selectedRentalService = { ...action.payload };
     },
-    fetchRentalServiceList(
-      state,
-      action: PayloadAction<RentalServiceResponse[]>,
-    ) {
+    fetchRentalServiceList(state, action: PayloadAction<RentalServiceResponse[]>) {
       action.payload.forEach((rentalService) => {
         state.rentalServices.push({
           id: rentalService.rentalServiceId,
@@ -35,6 +32,8 @@ const rentalSlice = createSlice({
           contactNum: rentalService.customer.phoneNum,
           pickUpTime: format(rentalService.reservationStart, "Pp"),
           returnTime: format(rentalService.reservationEnd, "Pp"),
+          reservationStart: rentalService.reservationStart,
+          reservationEnd: rentalService.reservationEnd,
           make: rentalService.vehicle.make,
           model: rentalService.vehicle.model,
           vin: rentalService.vehicle.vin,
@@ -47,9 +46,7 @@ const rentalSlice = createSlice({
     },
     delete(state, action: PayloadAction<number>) {
       const deleteId = action.payload;
-      state.rentalServices = state.rentalServices.filter(
-        (rentalService) => rentalService.id !== deleteId,
-      );
+      state.rentalServices = state.rentalServices.filter((rentalService) => rentalService.id !== deleteId);
       state.selectedRentalService = null;
     },
     resetRentalServices(state) {

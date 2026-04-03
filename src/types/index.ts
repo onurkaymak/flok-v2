@@ -31,6 +31,8 @@ export interface RentalService {
   contactNum: string;
   pickUpTime: string;
   returnTime: string;
+  reservationStart: string;
+  reservationEnd: string;
   make: string;
   model: string;
   vin: string;
