@@ -135,6 +135,37 @@ export const addRentalService = (
   };
 };
 
+export const updateRentalService = (
+  rentalServiceId: number,
+  reservationStart: string,
+  reservationEnd: string,
+  token: string,
+) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await axios.put(
+        `http://localhost:5000/api/rental/${rentalServiceId}`,
+        { rentalServiceId, reservationStart, reservationEnd },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      dispatch(rentalActions.update({ id: rentalServiceId, reservationStart, reservationEnd }));
+      dispatch(
+        uiActions.showNotification({
+          title: "Success",
+          message: "Reservation has been updated successfully.",
+        }),
+      );
+    } catch (err) {
+      dispatch(
+        uiActions.showNotification({
+          title: "Update Error",
+          message: "Something went wrong. Please try again.",
+        }),
+      );
+    }
+  };
+};
+
 export const deleteRentalService = (rentalServiceId: number, token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
