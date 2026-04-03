@@ -23,6 +23,9 @@ const rentalSlice = createSlice({
     fetchSelectedRentalService(state, action: PayloadAction<RentalService>) {
       state.selectedRentalService = { ...action.payload };
     },
+    clearSelectedRentalService(state) {
+      state.selectedRentalService = null;
+    },
     fetchRentalServiceList(state, action: PayloadAction<RentalServiceResponse[]>) {
       action.payload.forEach((rentalService) => {
         state.rentalServices.push({
