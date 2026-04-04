@@ -84,7 +84,6 @@ const UpdateVehicle = () => {
   const [state, setState] = useState("AL");
   const [licensePlate, setLicensePlate] = useState("");
   const [isRented, setIsRented] = useState(false);
-  const [inProduction, setInProduction] = useState(false);
 
   useEffect(() => {
     if (selectedVehicles.length === 0) {
@@ -110,7 +109,6 @@ const UpdateVehicle = () => {
       setState(found.state);
       setLicensePlate(found.licensePlate);
       setIsRented(found.isRented);
-      setInProduction(found.inProduction);
     }
 
     return () => {
@@ -135,7 +133,6 @@ const UpdateVehicle = () => {
       state,
       licensePlate,
       isRented,
-      inProduction,
     };
     dispatch(updateVehicle(vehicleInfo, token!));
     navigate("/profile/fleet");
@@ -330,50 +327,6 @@ const UpdateVehicle = () => {
                     value={licensePlate}
                     onChange={(e) => setLicensePlate(e.target.value)}
                   />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Section 3 */}
-        <div className="border-b border-gray-900/10 pb-12">
-          <div className="mt-10 space-y-10">
-            <legend className="text-sm font-semibold leading-6 text-gray-900">Rent Status</legend>
-            <div className="mt-6 space-y-6">
-              <div className="relative flex gap-x-3">
-                <div className="flex h-6 items-center">
-                  <input
-                    id="isRented"
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    checked={isRented}
-                    onChange={(e) => setIsRented(e.target.checked)}
-                  />
-                </div>
-                <div className="text-sm leading-6">
-                  <label htmlFor="isRented" className="font-medium text-gray-900">
-                    Is Booked
-                  </label>
-                  <p className="text-gray-500">Select this only if the vehicle is currently rented.</p>
-                </div>
-              </div>
-
-              <div className="relative flex gap-x-3">
-                <div className="flex h-6 items-center">
-                  <input
-                    id="inProduction"
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    checked={inProduction}
-                    onChange={(e) => setInProduction(e.target.checked)}
-                  />
-                </div>
-                <div className="text-sm leading-6">
-                  <label htmlFor="inProduction" className="font-medium text-gray-900">
-                    In Production
-                  </label>
-                  <p className="text-gray-500">Select this only if the vehicle is currently in production.</p>
                 </div>
               </div>
             </div>
