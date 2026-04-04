@@ -38,7 +38,6 @@ export const addVehicle = (vehicleInfo: Vehicle, token: string) => {
           state: vehicleInfo.state,
           licensePlate: vehicleInfo.licensePlate,
           isRented: vehicleInfo.isRented,
-          inProduction: vehicleInfo.inProduction,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -56,7 +55,6 @@ export const addVehicle = (vehicleInfo: Vehicle, token: string) => {
         state: response.data.vehicle.state,
         licensePlate: response.data.vehicle.licensePlate,
         isRented: response.data.vehicle.isRented,
-        inProduction: response.data.vehicle.inProduction,
       };
       dispatch(fleetActions.add(newVehicle));
     } catch (err) {
@@ -87,7 +85,6 @@ export const updateVehicle = (vehicleInfo: Vehicle, token: string) => {
           state: vehicleInfo.state,
           licensePlate: vehicleInfo.licensePlate,
           isRented: vehicleInfo.isRented,
-          inProduction: vehicleInfo.inProduction,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -105,7 +102,6 @@ export const updateVehicle = (vehicleInfo: Vehicle, token: string) => {
         state: response.data.vehicle.state,
         licensePlate: response.data.vehicle.licensePlate,
         isRented: response.data.vehicle.isRented,
-        inProduction: response.data.vehicle.inProduction,
       };
       dispatch(fleetActions.updateVehicle(updatedVehicle));
     } catch (err) {

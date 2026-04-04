@@ -147,7 +147,7 @@ const Rental = () => {
   const selectedCount = selectedRentalServiceById?.length ?? 0;
 
   return (
-    <div className="flex flex-col h-full gap-8 w-full mx-auto">
+    <div className="flex flex-col h-full gap-8 xl:max-w-screen-xl mx-auto">
       {/* Search Form */}
       <div className="border-b border-gray-200 pb-8 xl:max-w-screen-xl mx-auto w-full">
         <h1 className="text-5xl font-semibold text-center text-gray-900 mb-6 w-full">Reservation Check</h1>

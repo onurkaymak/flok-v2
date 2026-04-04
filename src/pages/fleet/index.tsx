@@ -27,12 +27,6 @@ const columns: GridColDef<Vehicle>[] = [
     width: 90,
     type: "boolean",
   },
-  {
-    field: "inProduction",
-    headerName: "In Production",
-    width: 120,
-    type: "boolean",
-  },
 ];
 
 const Fleet = () => {

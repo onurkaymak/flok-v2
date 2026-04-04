@@ -1,7 +1,7 @@
 export type UserRole = "MANAGER" | "AUTO DETAILER" | "CUSTOMER SERVICE AGENT";
 
 export interface User {
-  name: string; // We added this later, not exist in Flok-V1
+  name: string;
   userId: string;
   token: string;
   tokenExpTime: string;
@@ -21,7 +21,6 @@ export interface Vehicle {
   state: string;
   licensePlate: string;
   isRented: boolean;
-  inProduction: boolean;
 }
 
 export interface RentalService {
