@@ -12,6 +12,7 @@ const Sidebar = () => {
   const isRental = location.pathname.includes("rental");
 
   const isManager = userRole === "MANAGER";
+  const isDetailerOrManager = userRole === "MANAGER" || userRole === "AUTO DETAILER";
 
   const activeLinkClass =
     "flex items-center justify-between px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-md";
@@ -62,11 +63,11 @@ const Sidebar = () => {
       {isProduction && (
         <div className="flex flex-col gap-1 mt-2">
           <NavLink to="/profile/production" end className={({ isActive }) => (isActive ? activeLinkClass : linkClass)}>
-            <span>Detailings</span>
-            <MagnifyingGlassIcon className="w-4 h-4" />
+            <span>Productivity</span>
+            <UsersIcon className="w-4 h-4" />
           </NavLink>
 
-          {isManager ? (
+          {isDetailerOrManager ? (
             <NavLink
               to="/profile/production/add"
               className={({ isActive }) => (isActive ? activeLinkClass : linkClass)}
@@ -78,21 +79,6 @@ const Sidebar = () => {
             <span className={disabledLinkClass}>
               <span>New Detailing</span>
               <PlusIcon className="w-4 h-4" />
-            </span>
-          )}
-
-          {isManager ? (
-            <NavLink
-              to="/profile/production/productivity"
-              className={({ isActive }) => (isActive ? activeLinkClass : linkClass)}
-            >
-              <span>Productivity</span>
-              <UsersIcon className="w-4 h-4" />
-            </NavLink>
-          ) : (
-            <span className={disabledLinkClass}>
-              <span>Productivity</span>
-              <UsersIcon className="w-4 h-4" />
             </span>
           )}
         </div>
