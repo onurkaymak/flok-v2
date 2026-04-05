@@ -55,6 +55,20 @@ export interface RentalServiceResponse {
   };
 }
 
+export interface DetailingService {
+  id: number;
+  vin: string;
+  make: string;
+  model: string;
+  detailerName: string;
+  createdAt: string;
+}
+
+export interface LeaderboardEntry {
+  name: string;
+  count: number;
+}
+
 export interface UiNotificationResponse {
   title: string;
   message: string;
