@@ -17,6 +17,8 @@ import Notification from "./layout/Notification";
 import AddVehicle from "./pages/fleet/AddVehicle";
 import UpdateVehicle from "./pages/fleet/UpdateVehicle";
 import Rental from "./pages/rental";
+import Production from "./pages/production";
+import AddDetailing from "./pages/production/AddDetailing";
 
 import ProtectedRoute from "./layout/ProtectedRoute";
 import AddRental from "./pages/rental/AddRental";
@@ -92,7 +94,7 @@ function App() {
               path="production"
               element={
                 <ProtectedRoute allowedRoles={["MANAGER", "AUTO DETAILER"]}>
-                  <>Production</>
+                  <Production />
                 </ProtectedRoute>
               }
             />
@@ -100,7 +102,15 @@ function App() {
               path="production/add"
               element={
                 <ProtectedRoute allowedRoles={["MANAGER", "AUTO DETAILER"]}>
-                  <>Production Add</>
+                  <AddDetailing />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="production/productivity"
+              element={
+                <ProtectedRoute allowedRoles={["MANAGER", "AUTO DETAILER"]}>
+                  <Production />
                 </ProtectedRoute>
               }
             />
