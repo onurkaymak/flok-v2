@@ -5,6 +5,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import type { RootState } from "../store";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { logOutUser } from "../store/actions/auth-actions";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [profileIcon, setProfileIcon] = useState<string | null>(null);
@@ -13,6 +14,7 @@ const Navbar = () => {
 
   const userRole = useSelector((state: RootState) => state.user.userRole);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const isManager = userRole === "MANAGER";
   const isAutoDetailer = userRole === "AUTO DETAILER";
@@ -40,6 +42,7 @@ const Navbar = () => {
   const signOutButtonHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     dispatch(logOutUser());
+    navigate("/");
   };
 
   const activeClass = "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium";
