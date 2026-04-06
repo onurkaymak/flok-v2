@@ -11,6 +11,18 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
+const getDefaultRoute = (role: UserRole | null): string => {
+  switch (role) {
+    case "AUTO DETAILER":
+      return "/profile/production";
+    case "CUSTOMER SERVICE AGENT":
+      return "/profile/rental";
+    case "MANAGER":
+    default:
+      return "/profile";
+  }
+};
+
 const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -26,7 +38,7 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
           message: "You don't have permission to access this page.",
         }),
       );
-      navigate("/profile");
+      navigate(getDefaultRoute(userRole));
     }
   }, []);
 
