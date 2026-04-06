@@ -8,6 +8,8 @@ import { fleetActions } from "../../store/slices/fleet-slice";
 import { rentalActions } from "../../store/slices/rental-slice";
 import { productionActions } from "../../store/slices/production-slice";
 import type { RootState } from "../../store";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { TruckIcon, KeyIcon, CalendarDaysIcon, SparklesIcon } from "@heroicons/react/24/outline";
 
 interface WeatherData {
   city: string;
@@ -16,11 +18,51 @@ interface WeatherData {
   icon: string;
 }
 
-const StatCard = ({ title, value, sub }: { title: string; value: number | string; sub?: string }) => (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col gap-2">
-    <p className="text-sm font-medium text-gray-500">{title}</p>
-    <p className="text-4xl font-bold text-gray-900">{value}</p>
-    {sub && <p className="text-xs text-gray-400">{sub}</p>}
+const getWeatherDescription = (code: number): string => {
+  if (code === 0) return "Clear sky";
+  if (code <= 3) return "Partly cloudy";
+  if (code <= 9) return "Foggy";
+  if (code <= 29) return "Rain";
+  if (code <= 49) return "Freezing rain";
+  if (code <= 69) return "Rain";
+  if (code <= 79) return "Snow";
+  if (code <= 84) return "Rain showers";
+  if (code <= 94) return "Thunderstorm";
+  return "Stormy";
+};
+
+const getWeatherIcon = (code: number): string => {
+  if (code === 0) return "☀️";
+  if (code <= 3) return "⛅";
+  if (code <= 9) return "🌫️";
+  if (code <= 39) return "🌧️";
+  if (code <= 79) return "❄️";
+  if (code <= 84) return "🌦️";
+  return "⛈️";
+};
+
+const StatCard = ({
+  title,
+  value,
+  sub,
+  icon: Icon,
+  accent,
+}: {
+  title: string;
+  value: number | string;
+  sub?: string;
+  icon: React.ElementType;
+  accent: string;
+}) => (
+  <div className="bg-gray-800 rounded-xl p-5 flex flex-col gap-3 border border-gray-700">
+    <div className="flex items-center justify-between">
+      <p className="text-sm font-medium text-gray-400">{title}</p>
+      <div className={`p-2 rounded-lg ${accent}`}>
+        <Icon className="w-5 h-5 text-white" />
+      </div>
+    </div>
+    <p className="text-4xl font-bold text-white">{value}</p>
+    {sub && <p className="text-xs text-gray-500">{sub}</p>}
   </div>
 );
 
@@ -28,7 +70,7 @@ const Dashboard = () => {
   const dispatch = useAppDispatch();
 
   const token = useSelector((state: RootState) => state.user.token);
-  const name = useSelector((state: RootState) => state.user.userName);
+  const userName = useSelector((state: RootState) => state.user.userName);
   const vehicles = useSelector((state: RootState) => state.fleet.vehicles);
   const rentalServices = useSelector((state: RootState) => state.rental.rentalServices);
   const leaderboard = useSelector((state: RootState) => state.production.leaderboard);
@@ -53,7 +95,6 @@ const Dashboard = () => {
   useEffect(() => {
     fetcher();
 
-    // Fetch weather using browser geolocation
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -66,19 +107,13 @@ const Dashboard = () => {
             const temp = Math.round(data.current.temperature_2m);
             const code = data.current.weathercode;
 
-            // Reverse geocode city name
             const geoRes = await fetch(
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
             );
             const geoData = await geoRes.json();
             const city = geoData.address.city || geoData.address.town || geoData.address.village || "Your location";
 
-            setWeather({
-              city,
-              temp,
-              description: getWeatherDescription(code),
-              icon: getWeatherIcon(code),
-            });
+            setWeather({ city, temp, description: getWeatherDescription(code), icon: getWeatherIcon(code) });
           } catch {
             setWeatherError(true);
           }
@@ -90,92 +125,128 @@ const Dashboard = () => {
     }
   }, []);
 
-  const getWeatherDescription = (code: number): string => {
-    if (code === 0) return "Clear sky";
-    if (code <= 3) return "Partly cloudy";
-    if (code <= 9) return "Foggy";
-    if (code <= 19) return "Drizzle";
-    if (code <= 29) return "Rain";
-    if (code <= 39) return "Snow";
-    if (code <= 49) return "Freezing rain";
-    if (code <= 59) return "Drizzle";
-    if (code <= 69) return "Rain";
-    if (code <= 79) return "Snow";
-    if (code <= 84) return "Rain showers";
-    if (code <= 94) return "Thunderstorm";
-    return "Stormy";
-  };
-
-  const getWeatherIcon = (code: number): string => {
-    if (code === 0) return "☀️";
-    if (code <= 3) return "⛅";
-    if (code <= 9) return "🌫️";
-    if (code <= 39) return "🌧️";
-    if (code <= 79) return "❄️";
-    if (code <= 84) return "🌦️";
-    return "⛈️";
-  };
-
   return (
-    <div className="flex flex-col gap-8 w-full xl:max-w-screen-xl mx-auto">
+    <div className="flex flex-col gap-6 w-full h-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-5xl font-semibold text-center text-gray-900 w-full">Welcome, {name}</h1>
+      <div>
+        <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-500 mt-1">
+          Welcome back, <span className="font-medium text-gray-700">{userName}</span>
+        </p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard title="Total Vehicles" value={totalVehicles} sub="In inventory" />
-        <StatCard title="Currently Rented" value={rentedVehicles} sub={`of ${totalVehicles} vehicles`} />
-        <StatCard title="Active Reservations" value={activeReservations} />
-        <StatCard title="Cleaned Today" value={cleanedToday} sub="By all detailers" />
+        <StatCard
+          title="Total Vehicles"
+          value={totalVehicles}
+          sub="In inventory"
+          icon={TruckIcon}
+          accent="bg-indigo-600"
+        />
+        <StatCard
+          title="Currently Rented"
+          value={rentedVehicles}
+          sub={`of ${totalVehicles} vehicles`}
+          icon={KeyIcon}
+          accent="bg-emerald-600"
+        />
+        <StatCard
+          title="Active Reservations"
+          value={activeReservations}
+          sub="Ongoing bookings"
+          icon={CalendarDaysIcon}
+          accent="bg-amber-600"
+        />
+        <StatCard
+          title="Cleaned Today"
+          value={cleanedToday}
+          sub="By all detailers"
+          icon={SparklesIcon}
+          accent="bg-sky-600"
+        />
       </div>
 
-      {/* Leaderboard + Weather */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Leaderboard */}
-        <div className="xl:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Detailer Leaderboard — Today</h2>
+      {/* Bottom row */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 flex-1">
+        {/* Leaderboard chart */}
+        <div className="xl:col-span-2 bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col gap-4">
+          <h2 className="text-base font-semibold text-white">Detailer Leaderboard — Today</h2>
           {leaderboard.length === 0 ? (
-            <p className="text-sm text-gray-400">No detailing records for today yet.</p>
+            <div className="flex flex-1 items-center justify-center">
+              <p className="text-sm text-gray-500">No detailing records for today yet.</p>
+            </div>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-gray-500 border-b border-gray-100">
-                  <th className="pb-3 font-medium">Rank</th>
-                  <th className="pb-3 font-medium">Detailer</th>
-                  <th className="pb-3 font-medium text-right">Cars Cleaned</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {leaderboard.map((entry, index) => (
-                  <tr key={entry.name} className="py-2">
-                    <td className="py-3 text-gray-400">#{index + 1}</td>
-                    <td className="py-3 font-medium text-gray-900">{entry.name}</td>
-                    <td className="py-3 text-right font-semibold text-indigo-600">{entry.count}</td>
+            <>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={leaderboard} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="name" tick={{ fill: "#9ca3af", fontSize: 12 }} />
+                  <YAxis allowDecimals={false} tick={{ fill: "#9ca3af", fontSize: 12 }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#1f2937",
+                      border: "1px solid #374151",
+                      borderRadius: "8px",
+                      color: "#f9fafb",
+                    }}
+                    cursor={{ fill: "rgba(99,102,241,0.1)" }}
+                  />
+                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                    {leaderboard.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill="#4f46e5" />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-gray-500 border-b border-gray-700">
+                    <th className="pb-2 font-medium">Rank</th>
+                    <th className="pb-2 font-medium">Detailer</th>
+                    <th className="pb-2 font-medium text-right">Cars Cleaned</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-700">
+                  {leaderboard.map((entry, index) => (
+                    <tr key={entry.name}>
+                      <td className="py-2 text-gray-500">#{index + 1}</td>
+                      <td className="py-2 font-medium text-gray-200">{entry.name}</td>
+                      <td className="py-2 text-right font-semibold text-indigo-400">{entry.count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </div>
 
         {/* Weather */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Weather</h2>
+        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col gap-4">
+          <h2 className="text-base font-semibold text-white">Weather</h2>
           {weatherError ? (
-            <p className="text-sm text-gray-400">Could not fetch weather data.</p>
+            <div className="flex flex-1 items-center justify-center">
+              <p className="text-sm text-gray-500">Could not fetch weather data.</p>
+            </div>
           ) : weather ? (
-            <div className="flex flex-col gap-3">
-              <p className="text-sm text-gray-500">{weather.city}</p>
-              <div className="flex items-center gap-3">
-                <span className="text-5xl">{weather.icon}</span>
-                <span className="text-5xl font-bold text-gray-900">{weather.temp}°F</span>
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-gray-400">{weather.city}</p>
+              <div className="flex items-center gap-4">
+                <span className="text-6xl">{weather.icon}</span>
+                <div className="flex flex-col">
+                  <span className="text-5xl font-bold text-white">{weather.temp}°F</span>
+                  <span className="text-sm text-gray-400 capitalize mt-1">{weather.description}</span>
+                </div>
               </div>
-              <p className="text-sm text-gray-500 capitalize">{weather.description}</p>
+              <div className="mt-auto pt-4 border-t border-gray-700">
+                <p className="text-xs text-gray-500">Based on your current location</p>
+              </div>
             </div>
           ) : (
-            <p className="text-sm text-gray-400">Fetching weather...</p>
+            <div className="flex flex-1 items-center justify-center">
+              <p className="text-sm text-gray-500">Fetching weather...</p>
+            </div>
           )}
         </div>
       </div>
