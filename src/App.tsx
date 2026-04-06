@@ -23,6 +23,7 @@ import AddDetailing from "./pages/production/AddDetailing";
 import ProtectedRoute from "./layout/ProtectedRoute";
 import AddRental from "./pages/rental/AddRental";
 import UpdateRental from "./pages/rental/UpdateRental";
+import Dashboard from "./pages/profile/Dashboard";
 
 export let logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -73,6 +74,14 @@ function App() {
         {isLoggedIn && <Route path="/" element={<Navigate to={"/profile"} />} />}
         {isLoggedIn && (
           <Route path="/profile" element={<Profile />}>
+            <Route
+              index
+              element={
+                <ProtectedRoute allowedRoles={["MANAGER"]}>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
             <Route path="fleet" element={<Fleet />} />
             <Route
               path="fleet/add"
