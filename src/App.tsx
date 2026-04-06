@@ -10,6 +10,8 @@ import { logOutUser } from "./store/actions/auth-actions";
 import Splash from "./pages/Splash";
 import Auth from "./pages/auth";
 import Profile from "./pages/profile";
+import Dashboard from "./pages/profile/Dashboard";
+import ProfileIndex from "./pages/profile/ProfileIndex";
 import type { User } from "./types";
 import { userActions } from "./store/slices/user-slice";
 import Fleet from "./pages/fleet";
@@ -23,7 +25,6 @@ import AddDetailing from "./pages/production/AddDetailing";
 import ProtectedRoute from "./layout/ProtectedRoute";
 import AddRental from "./pages/rental/AddRental";
 import UpdateRental from "./pages/rental/UpdateRental";
-import Dashboard from "./pages/profile/Dashboard";
 
 export let logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -74,15 +75,23 @@ function App() {
         {isLoggedIn && <Route path="/" element={<Navigate to={"/profile"} />} />}
         {isLoggedIn && (
           <Route path="/profile" element={<Profile />}>
+            <Route index element={<ProfileIndex />} />
             <Route
-              index
+              path="dashboard"
               element={
                 <ProtectedRoute allowedRoles={["MANAGER"]}>
                   <Dashboard />
                 </ProtectedRoute>
               }
             />
-            <Route path="fleet" element={<Fleet />} />
+            <Route
+              path="fleet"
+              element={
+                <ProtectedRoute allowedRoles={["MANAGER"]}>
+                  <Fleet />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="fleet/add"
               element={
@@ -112,14 +121,6 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={["MANAGER", "AUTO DETAILER"]}>
                   <AddDetailing />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="production/productivity"
-              element={
-                <ProtectedRoute allowedRoles={["MANAGER", "AUTO DETAILER"]}>
-                  <Production />
                 </ProtectedRoute>
               }
             />
