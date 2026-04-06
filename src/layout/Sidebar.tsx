@@ -23,16 +23,27 @@ const Sidebar = () => {
 
   return (
     <div className="flex flex-col w-48 min-h-screen bg-gray-800 px-3 py-4 gap-2">
-      <NavLink to="/profile" end className={({ isActive }) => (isActive ? activeLinkClass : linkClass)}>
-        Dashboard
-      </NavLink>
+      {isManager ? (
+        <NavLink to="/profile/dashboard" className={({ isActive }) => (isActive ? activeLinkClass : linkClass)}>
+          Dashboard
+        </NavLink>
+      ) : (
+        <span className={disabledLinkClass}>Dashboard</span>
+      )}
 
       {isFleet && (
         <div className="flex flex-col gap-1 mt-2">
-          <NavLink to="/profile/fleet" end className={({ isActive }) => (isActive ? activeLinkClass : linkClass)}>
-            <span>Vehicle</span>
-            <MagnifyingGlassIcon className="w-4 h-4" />
-          </NavLink>
+          {isManager ? (
+            <NavLink to="/profile/fleet" end className={({ isActive }) => (isActive ? activeLinkClass : linkClass)}>
+              <span>Vehicle</span>
+              <MagnifyingGlassIcon className="w-4 h-4" />
+            </NavLink>
+          ) : (
+            <span className={disabledLinkClass}>
+              <span>Vehicle</span>
+              <MagnifyingGlassIcon className="w-4 h-4" />
+            </span>
+          )}
 
           {isManager ? (
             <NavLink to="/profile/fleet/add" className={({ isActive }) => (isActive ? activeLinkClass : linkClass)}>
@@ -91,7 +102,7 @@ const Sidebar = () => {
             <MagnifyingGlassIcon className="w-4 h-4" />
           </NavLink>
 
-          {isManager ? (
+          {isManager || userRole === "CUSTOMER SERVICE AGENT" ? (
             <NavLink to="/profile/rental/add" className={({ isActive }) => (isActive ? activeLinkClass : linkClass)}>
               <span>Book a Rental</span>
               <PlusIcon className="w-4 h-4" />

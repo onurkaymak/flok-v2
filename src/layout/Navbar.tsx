@@ -20,6 +20,7 @@ const Navbar = () => {
   const isAutoDetailer = userRole === "AUTO DETAILER";
   const isCustomerServiceAgent = userRole === "CUSTOMER SERVICE AGENT";
 
+  const canAccessFleet = isManager;
   const canAccessProduction = isManager || isAutoDetailer;
   const canAccessRental = isManager || isCustomerServiceAgent;
 
@@ -84,10 +85,14 @@ const Navbar = () => {
               </div>
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
-                  {/* Fleet - accessible to all */}
-                  <NavLink to="/profile/fleet" className={({ isActive }) => (isActive ? activeClass : enabledClass)}>
-                    Fleet
-                  </NavLink>
+                  {/* Fleet - Manager only */}
+                  {canAccessFleet ? (
+                    <NavLink to="/profile/fleet" className={({ isActive }) => (isActive ? activeClass : enabledClass)}>
+                      Fleet
+                    </NavLink>
+                  ) : (
+                    <span className={disabledClass}>Fleet</span>
+                  )}
 
                   {/* Production - Manager and Auto Detailer only */}
                   {canAccessProduction ? (
@@ -162,12 +167,16 @@ const Navbar = () => {
         {mobileMenuOpen && (
           <div className="sm:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
-              <NavLink
-                to="/profile/fleet"
-                className={({ isActive }) => (isActive ? activeMobileClass : enabledMobileClass)}
-              >
-                Fleet
-              </NavLink>
+              {canAccessFleet ? (
+                <NavLink
+                  to="/profile/fleet"
+                  className={({ isActive }) => (isActive ? activeMobileClass : enabledMobileClass)}
+                >
+                  Fleet
+                </NavLink>
+              ) : (
+                <span className={disabledMobileClass}>Fleet</span>
+              )}
 
               {canAccessProduction ? (
                 <NavLink
