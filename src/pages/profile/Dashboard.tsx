@@ -9,12 +9,27 @@ import { rentalActions } from "../../store/slices/rental-slice";
 import { productionActions } from "../../store/slices/production-slice";
 import type { RootState } from "../../store";
 import { TruckIcon, KeyIcon, CalendarDaysIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+
+// Fix Leaflet default marker icons
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
 
 interface WeatherData {
   city: string;
   temp: number;
   description: string;
   icon: string;
+}
+
+interface Coords {
+  latitude: number;
+  longitude: number;
 }
 
 const getWeatherDescription = (code: number): string => {
@@ -76,6 +91,7 @@ const Dashboard = () => {
 
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherError, setWeatherError] = useState(false);
+  const [coords, setCoords] = useState<Coords | null>(null);
 
   const totalVehicles = vehicles.length;
   const rentedVehicles = vehicles.filter((v) => v.isRented).length;
@@ -98,6 +114,7 @@ const Dashboard = () => {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
+          setCoords({ latitude, longitude });
           try {
             const res = await fetch(
               `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode&temperature_unit=fahrenheit`,
@@ -228,32 +245,59 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Weather */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col gap-4">
-          <h2 className="text-base font-semibold text-white">Weather</h2>
-          {weatherError ? (
-            <div className="flex flex-1 items-center justify-center">
+        {/* Right column — Weather + Map */}
+        <div className="flex flex-col gap-4">
+          {/* Weather card */}
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col gap-4">
+            <h2 className="text-base font-semibold text-white">Weather</h2>
+            {weatherError ? (
               <p className="text-sm text-gray-500">Could not fetch weather data.</p>
-            </div>
-          ) : weather ? (
-            <div className="flex flex-col gap-4">
-              <p className="text-sm text-gray-400">{weather.city}</p>
-              <div className="flex items-center gap-4">
-                <span className="text-6xl">{weather.icon}</span>
-                <div className="flex flex-col">
-                  <span className="text-5xl font-bold text-white">{weather.temp}°F</span>
-                  <span className="text-sm text-gray-400 capitalize mt-1">{weather.description}</span>
+            ) : weather ? (
+              <div className="flex flex-col gap-3">
+                <p className="text-sm text-gray-400">{weather.city}</p>
+                <div className="flex items-center gap-4">
+                  <span className="text-5xl">{weather.icon}</span>
+                  <div className="flex flex-col">
+                    <span className="text-4xl font-bold text-white">{weather.temp}°F</span>
+                    <span className="text-sm text-gray-400 capitalize mt-1">{weather.description}</span>
+                  </div>
                 </div>
+                <p className="text-xs text-gray-500 pt-2 border-t border-gray-700">Based on your current location</p>
               </div>
-              <div className="mt-auto pt-4 border-t border-gray-700">
-                <p className="text-xs text-gray-500">Based on your current location</p>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-1 items-center justify-center">
+            ) : (
               <p className="text-sm text-gray-500">Fetching weather...</p>
+            )}
+          </div>
+
+          {/* Map card */}
+          <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden flex-1 flex flex-col">
+            <div className="px-6 pt-4 pb-2">
+              <h2 className="text-base font-semibold text-white">Your Location</h2>
             </div>
-          )}
+            <div className="flex-1" style={{ minHeight: 220 }}>
+              {coords ? (
+                <MapContainer
+                  center={[coords.latitude, coords.longitude]}
+                  zoom={13}
+                  style={{ height: "100%", width: "100%" }}
+                  zoomControl={true}
+                  scrollWheelZoom={false}
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  />
+                  <Marker position={[coords.latitude, coords.longitude]}>
+                    <Popup>You are here</Popup>
+                  </Marker>
+                </MapContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <p className="text-sm text-gray-500">Waiting for location...</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
