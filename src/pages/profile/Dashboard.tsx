@@ -8,7 +8,6 @@ import { fleetActions } from "../../store/slices/fleet-slice";
 import { rentalActions } from "../../store/slices/rental-slice";
 import { productionActions } from "../../store/slices/production-slice";
 import type { RootState } from "../../store";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { TruckIcon, KeyIcon, CalendarDaysIcon, SparklesIcon } from "@heroicons/react/24/outline";
 
 interface WeatherData {
@@ -125,6 +124,8 @@ const Dashboard = () => {
     }
   }, []);
 
+  const maxCount = leaderboard.length > 0 ? Math.max(...leaderboard.map((e) => e.count)) : 1;
+
   return (
     <div className="flex flex-col gap-6 w-full h-full">
       {/* Header */}
@@ -178,28 +179,33 @@ const Dashboard = () => {
             </div>
           ) : (
             <>
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={leaderboard} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="name" tick={{ fill: "#9ca3af", fontSize: 12 }} />
-                  <YAxis allowDecimals={false} tick={{ fill: "#9ca3af", fontSize: 12 }} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1f2937",
-                      border: "1px solid #374151",
-                      borderRadius: "8px",
-                      color: "#f9fafb",
-                    }}
-                    cursor={{ fill: "rgba(99,102,241,0.1)" }}
-                  />
-                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                    {leaderboard.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill="#4f46e5" />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              {/* Custom Bar Chart */}
+              <div className="flex items-end gap-3 border-b border-gray-700" style={{ height: 180 }}>
+                {leaderboard.map((entry) => (
+                  <div
+                    key={entry.name}
+                    className="flex flex-col justify-end items-center gap-1 h-full"
+                    style={{ minWidth: 48 }}
+                  >
+                    <span className="text-xs font-semibold text-gray-200">{entry.count}</span>
+                    <div
+                      className="w-10 rounded-t-lg bg-indigo-500 transition-all duration-300"
+                      style={{ height: `${(entry.count / maxCount) * 140}px`, minHeight: 4 }}
+                    />
+                  </div>
+                ))}
+              </div>
 
+              {/* X Axis labels */}
+              <div className="flex gap-3">
+                {leaderboard.map((entry) => (
+                  <div key={entry.name} style={{ minWidth: 48 }} className="text-center">
+                    <span className="text-xs text-gray-400 truncate block">{entry.name}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Table */}
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-gray-500 border-b border-gray-700">
