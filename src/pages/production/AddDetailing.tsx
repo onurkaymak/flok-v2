@@ -13,9 +13,9 @@ const AddDetailing = () => {
 
   const [vin, setVin] = useState("");
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     if (!vin.trim()) return;
-    dispatch(addDetailingService(vin, userId!, token!));
+    await dispatch(addDetailingService(vin, userId!, token!));
     navigate("/profile/production");
   };
 
