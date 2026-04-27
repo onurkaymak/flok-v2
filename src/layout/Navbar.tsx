@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -23,6 +23,19 @@ const Navbar = () => {
   const canAccessFleet = isManager;
   const canAccessProduction = isManager || isAutoDetailer;
   const canAccessRental = isManager || isCustomerServiceAgent;
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     switch (userRole) {
@@ -130,7 +143,7 @@ const Navbar = () => {
               </button>
 
               {/* Profile dropdown */}
-              <div className="relative ml-3">
+              <div className="relative ml-3" ref={dropdownRef}>
                 <button
                   type="button"
                   className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
