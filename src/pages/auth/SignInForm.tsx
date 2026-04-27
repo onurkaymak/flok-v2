@@ -29,7 +29,7 @@ const SignInForm = ({ onCreateAccountButton }: Props) => {
   };
 
   return (
-    <div className="container">
+    <div className="relative min-h-screen w-full">
       <div
         className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
         aria-hidden="true"
@@ -43,7 +43,7 @@ const SignInForm = ({ onCreateAccountButton }: Props) => {
         />
       </div>
 
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8 -translate-y-12">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img className="h-22 w-auto" src="https://i.ibb.co/rcpT5Xb/flok1.png" alt="" />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
