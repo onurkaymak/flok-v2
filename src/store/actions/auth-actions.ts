@@ -16,6 +16,8 @@ export const createUser = ({ enteredName, enteredEmail, enteredPassword, selecte
         password: enteredPassword,
         employeeRole: selectedRole,
       });
+
+      await dispatch(signInUser({ enteredEmail, enteredPassword }));
     } catch (err) {
       dispatch(
         uiActions.showNotification({

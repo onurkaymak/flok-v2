@@ -1,5 +1,6 @@
 import { useRef, useState, Fragment } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { useNavigate } from "react-router-dom";
 
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Listbox, Transition } from "@headlessui/react";
@@ -38,12 +39,13 @@ const SignUpForm = ({ onCreateAccount }: Props) => {
   const [selected, setSelected] = useState(people[0]);
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const nameInputRef = useRef<HTMLInputElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passInputRef = useRef<HTMLInputElement>(null);
 
-  const formSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const formSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!nameInputRef.current || !emailInputRef.current || !passInputRef.current) return;
 
@@ -54,8 +56,8 @@ const SignUpForm = ({ onCreateAccount }: Props) => {
       selectedRole: selected.name.toUpperCase(),
     };
 
-    dispatch(createUser(userInfo));
-    onCreateAccount();
+    await dispatch(createUser(userInfo));
+    navigate("/profile");
   };
 
   return (
