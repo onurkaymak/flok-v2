@@ -60,7 +60,7 @@ export const addDetailingService = (vin: string, detailerId: string, token: stri
       );
 
       const newService = {
-        id: response.data.vehicle.detailingServiceId,
+        id: response.data.detailingServiceId,
         vin: response.data.vehicle.vin,
         make: response.data.vehicle.make,
         model: response.data.vehicle.model,
